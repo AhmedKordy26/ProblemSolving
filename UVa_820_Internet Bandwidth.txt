@@ -1,0 +1,75 @@
+#include <bits/stdc++.h>
+#define ll long long
+#define ld long double
+#define endl "\n"
+#define ull unsigned long long
+#define ALL(v) ((v).begin()), ((v).end())
+#define INCREASING(v) sort(ALL(v))
+#define DECREASING(v) INCREASING(v), reverse(ALL(v))
+#define SZ(v)   ((int)((v).size()))
+#define LP(c,x,n)  for(int c=x;c<n;c++)
+#define LO(c,n,x)  for(int c=n;c>=x;c--)
+#define watch(x) cout << (#x) << " is " << (x) << endl
+#define PB push_back
+#define F first
+#define S second
+#define STP(x) setprecision(x)
+#define MP make_pair
+#define PI ( 2 * acos(0.0))
+#define EPS 1e-8
+#define INF 1.0/0.0
+#define Yala_Besor3a ios_base::sync_with_stdio(0),ios::sync_with_stdio(0),cin.tie(0),cout.tie(0)
+#define ReadFile freopen("jenga.in","r",stdin);
+#define WriteFile freopen("output.txt","w",stdout)
+using namespace std;
+const int OO = 0x3f3f3f3f,NegOO= -1*OO,N =1e2+5,mod =1e9+7 ;
+int Tests,n,S,T,x,y,z,Con,costs[N][N],vis[N],path[N],pathLen;
+
+int getPath(int curNode,int dest,int curLen,int minFlow) {
+    path[curLen] = curNode;
+    if (curNode == dest) {
+        pathLen = curLen + 1;
+        return minFlow;
+    }
+    int ans = 0;
+    vis[curNode] = 1;
+    LP(c, 1, n+1) {
+        if(vis[c]||costs[curNode][c]<=0)continue;
+        ans=getPath(c,dest,curLen+1,min(costs[curNode][c],minFlow));
+        if(ans>0)break;
+    }
+    return ans;
+}
+int maxFlow(int src,int dest) { // ford fulkerson
+    int totalFlow = 0, curFlow;
+    while (true) {
+        memset(vis, 0, sizeof(vis));
+        curFlow = getPath(src, dest, 0, OO);
+        if (curFlow <= 0)break;
+        LP(c, 1, pathLen) {
+            costs[path[c - 1]][path[c]] -= curFlow;
+            costs[path[c]][path[c - 1]] += curFlow;
+        }
+        totalFlow+=curFlow;
+    }
+    return totalFlow;
+}
+int main() {
+    Yala_Besor3a;
+    int t=0;
+    while(cin>>n)
+    {
+        ++t;
+        if(n==0)break;
+        memset(costs,0, sizeof(costs));
+        cin>>S>>T>>Con;
+        LP(c,0,Con)
+        {
+            cin>>x>>y>>z;
+            costs[x][y]+=z;
+            costs[y][x]+=z;
+        }
+        cout<<"Network "<<t<<endl<<"The bandwidth is "<<maxFlow(S,T)<<'.'<<endl<<endl;
+    }
+    return 0;
+}
