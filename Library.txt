@@ -112,13 +112,13 @@ void numdiv(ll n)
     }
 }
 bool prime[maxarr];
-void Sieve()
-{
-    memset(prime,1,sizeof(prime));
-    prime[0]=prime[1]=0;
-    for(int c=2; c*c<=maxarr; c++)
-    {
-        for(int i=2*c; i<maxarr; i+=c)prime[i]=0;
+void Sieve() {
+    memset(prime, 1, sizeof(prime));
+    prime[0] = prime[1] = 0;
+    for (int c = 2; c * c <= maxarr; c++) {
+        if (prime[c]) {
+            for (int i = 2 * c; i < maxarr; i += c)prime[i] = 0;
+        }
     }
 }
 vector<ll>primes;
@@ -504,8 +504,3 @@ bool compare(const data &a, const data &b)
 //int dx[]= {-1, 1, 0, 0};/*u,d,r,l*/
 //int dy[]= {0, 0, 1, -1};
 const int OO = 0x3f3f3f3f,NegOO= -1*OO,N =5e3+5,mod = 1e9+7 ;
-
-
-
-Adminstrator1
-23280727616944
