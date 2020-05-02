@@ -408,6 +408,24 @@ vector<int> KMP(string str,string pat)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
+///////// Compression
+vector<int> compress(vector<int>inp)
+{
+    vector<int>tmp,ans;
+    int n=inp.size();
+    for (int i = 0; i < n; ++i)
+    {
+        tmp.push_back(inp[i]);
+    }
+    sort(tmp.begin(),tmp.end());
+    tmp.erase(unique(tmp.begin(),tmp.end()),tmp.end());
+    for (int i = 0; i < n; ++i)
+    {
+        ans.push_back(lower_bound(tmp.begin(),tmp.end(),inp[i])-tmp.begin());
+    }
+    return ans;
+}
+///////////////////////////////////////////////////////////////////////////////////
 ///////// ford fulkerson' Max Flow
 int path[N],int costs[N][N],pathLen;
 int getPath(int curNode,int dest,int curLen,int minFlow) {
