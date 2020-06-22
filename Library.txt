@@ -12,6 +12,7 @@
 #define SZ(v)   ((int)((v).size()))
 #define LP(c,x,n)  for(int c=x;c<n;c++)
 #define LO(c,n,x)  for(int c=n;c>=x;c--)
+#define STP(x) setprecision(x)
 #define watch(x) cout << (#x) << " is " << (x) << endl
 #define PB push_back
 #define F first
@@ -121,9 +122,9 @@ void Sieve() {
         }
     }
 }
-vector<ll>primes;
-void primeFactors(ll n)
+vector<ll> primeFactors(ll n)
 {
+    vector<ll>primes;
     while (n%2 == 0)
     {
         primes.push_back(2);
@@ -142,6 +143,7 @@ void primeFactors(ll n)
 
     if (n > 2)
         primes.push_back(n);
+    return primes;
 }
 ///////////////////////////////////////////////////////////////////////////////////////
 //  NcR using DP
