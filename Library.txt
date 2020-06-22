@@ -87,30 +87,22 @@ ld dis(int x1,int y1,int x2,int y2)
 {
     return sqrt(pow(x2-x1,2)+pow(y2-y1,2));
 }
-bool checklucky(int n)
-{
-    while(n)
-    {
-        if(n%10!=4&&n%10!=7)return false;
-        n/=10;
-    }
-    return true;
-}
 int logg2(ll n)
 {
     int ans=0;
     while(n)ans++,n/=2;
     return --ans;
 }
-vector<ll>divisors;
-void numdiv(ll n)
+vector<ll> numdiv(ll n)
 {
+    vector<ll>divisors;	
     ll ans=0;
     for(ll c=1;c*c<=n; c++)
     {
         if(n%c==0)divisors.push_back(c);
         if(n/c!=c&&n%(n/c)==0)divisors.push_back(n/c);
     }
+    return divisors;	
 }
 bool prime[maxarr];
 void Sieve() {
