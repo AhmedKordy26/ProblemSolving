@@ -360,6 +360,66 @@ pair<int,vector<edge> > MST_Kruskal(vector<edge> edgeList,int n) // o (E log V)
 
 
 
+
+
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+/////////////////////////// Tree Isomorphism check
+
+
+vector<int>adj[N]; // zero indexed
+int deg[N];
+int n;
+string getNodeCanonicalForm(int node,vector<vector<string>>&children)
+{
+    string ans="(";
+    sort(children[node].begin(),children[node].end());
+    for(auto u:children[node])ans+=u;
+    ans+=")";
+    return ans;
+}
+string treeCanonicalForm()
+{
+    queue<int>leaves;//leaf nodes
+    int remNodes=n;
+    for (int i = 0; i < n; ++i) {
+        if(adj[i].size()<=1) leaves.push(i);
+        else deg[i]=adj[i].size();
+    }
+    vector<vector<string>>children(n);
+    while(remNodes>2){
+        int sz=leaves.size();
+        while(sz--)
+        {
+            int v=leaves.front();
+            leaves.pop();
+            string ans=getNodeCanonicalForm(v,children);
+            for(auto parent:adj[v]) {
+                children[parent].push_back(ans);
+                if (--deg[parent] == 1)leaves.push(parent);
+            }
+            --remNodes;
+        }
+
+    }
+    int v1=leaves.front();
+    leaves.pop();
+    int v2=leaves.empty()?-1:leaves.front();
+    string s1=getNodeCanonicalForm(v1,children);
+    string s2= v2==-1?"":getNodeCanonicalForm(v2,children);
+    if(v2==-1)return s1;
+    children[v1].push_back(s2);
+    children[v2].push_back(s1);
+    return min(getNodeCanonicalForm(v1,children),getNodeCanonicalForm(v2,children));
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////
