@@ -481,6 +481,64 @@ int dp (int at, int mask)
 }
 
 //////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+////////// multiset using BIT
+int arr[N],res[N];
+struct BIT{
+    vector<int> arr;
+    BIT(int n){
+        n=(1<<int(ceil(log2(n))));
+        arr.resize(n);
+    }
+
+    void add(int i,int x){
+        for(i++;i<=arr.size();i+=(i&-i))
+            arr[i-1]+=x;
+    }
+    int get(int i){
+        int res=0;
+        for(i++;i;i-=(i&-i))
+            res+=arr[i-1];
+        return res;
+    }
+    int find(int val){
+        int st=0;
+        for(int s=arr.size()>>1 ; s ; s>>=1)
+            if(val>arr[st+s-1])
+                val-=arr[(st+=s)-1];
+        return st;
+    }
+};
+struct mySet{
+    BIT bit;
+    mySet(int mxVal):bit(mxVal+1){
+
+    }
+    void insert(int x){
+        bit.add(x,1);
+    }
+    int count(int x){
+        return bit.get(x)-bit.get(x-1);
+    }
+    int operator[](int i){
+        return bit.find(i+1);
+    }
+    int size(){
+        return bit.get(bit.arr.size()-1);
+    }
+    void erase(int val){
+        bit.add(val,-count(val));
+    }
+    // delete cnt items of value val
+    void erase(int val,int cnt){
+        bit.add(val,-min(cnt,count(val)));
+    }
+};
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 
 ////////////////// sorting a vector of structs 
 
