@@ -283,51 +283,53 @@ return fabs(a-b)<=EPS ? 0: a<b ? -1 : 1 ;
 
 struct DSU
 {
-	vector<int>parent,Gsize;
-	int Forests,NumNodes;
-	DSU(int n)
-	{
-		parent.resize(n+5);
-		Gsize.resize(n+5);
-		Forests=n;
-		NumNodes=n;
-		LP(c,0,n)parent[c]=c,Gsize[c]=1;
-	}
-	int findParent(int x)
-	{
-		if(parent[x]==x)return x;
-		return parent[x]=findParent(parent[x]);
-	}
-	int GroupSize(int x)
-	{
-		return Gsize[findParent(x)];
-	}
-	void link(int x,int y)
-	{
-		x=findParent(x),y=findParent(y);
-		if(x==y)return;
-		if(Gsize[x]>=Gsize[y])Gsize[x]+=Gsize[y],parent[y]=x;
-		else
-		{
-			Gsize[y]+=Gsize[x],parent[x]=y;
-		}
-		Forests--;
-	}
+    vector<int>parent,Gsize;
+    int Forests,NumNodes;
+    DSU(int n)
+    {
+        parent.resize(n+5);
+        Gsize.resize(n+5);
+        Forests=n;
+        NumNodes=n;
+        for (int i = 0; i < n; ++i) {
+            parent[i]=i,Gsize[i]=1;
+        }
+    }
+    int findParent(int x)
+    {
+        if(parent[x]==x)return x;
+        return parent[x]=findParent(parent[x]);
+    }
+    int GroupSize(int x)
+    {
+        return Gsize[findParent(x)];
+    }
+    void link(int x,int y)
+    {
+        x=findParent(x),y=findParent(y);
+        if(x==y)return;
+        if(Gsize[x]>=Gsize[y])Gsize[x]+=Gsize[y],parent[y]=x;
+        else
+        {
+            Gsize[y]+=Gsize[x],parent[x]=y;
+        }
+        Forests--;
+    }
 
-	bool IsSameGroup(int x,int y)
-	{
-		return findParent(x)==findParent(y);
-	}
-	vector<vector<int> > ConectedComponents()
-	{
-		vector<vector<int>>List;
-		List.resize(NumNodes+5);
-		for(int c=0;c<=NumNodes;c++)
-		{
-			List[findParent(c)].push_back(c);
-		}
-		return List;
-	}
+    bool IsSameGroup(int x,int y)
+    {
+        return findParent(x)==findParent(y);
+    }
+    vector<vector<int> > ConectedComponents()
+    {
+        vector<vector<int>>List;
+        List.resize(NumNodes+5);
+        for(int c=0;c<=NumNodes;c++)
+        {
+            List[findParent(c)].push_back(c);
+        }
+        return List;
+    }
 };
 
 
@@ -362,7 +364,6 @@ pair<int,vector<edge> > MST_Kruskal(vector<edge> edgeList,int n) // o (E log V)
 
 
 
-///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// Tree Isomorphism check
 
@@ -414,11 +415,55 @@ string treeCanonicalForm()
 }
 
 
+
 ///////////////////////////////////////////////////////////////////////////////////
+///////////////// Segment Tree
 
-
-
-
+struct Node
+{
+    int mi,sum;
+    Node()
+    {
+        mi=-1e9;
+        sum=0;
+    }
+}tree[4*N];
+Node merge(const Node &lf,const Node &rt)
+{
+    Node tmp=Node();
+    tmp.mi=min(lf.mi,lf.sum+rt.mi);
+    tmp.sum=lf.sum+rt.sum;
+    return tmp;
+}
+void build(int par=0,int ns=0,int ne=n-1)
+{
+    Node &val=tree[par];
+    if(ns==ne)
+    {
+        val.sum=0,val.mi=-1e9;
+        return;
+    }
+    int lf=2*par+1,rt=lf+1,mid=ns+(ne-ns)/2;
+    build(lf,ns,mid);
+    build(rt,mid+1,ne);
+//    val=merge(tree[lf],tree[rt]);
+    return;
+}
+void update(int wh,int toUpdt,int par=0,int ns=0,int ne=n-1)
+{
+    if(ne<wh or ns >wh)return;
+    Node &val=tree[par];
+    if(ns==ne)
+    {
+        val.sum=val.mi=toUpdt;
+        return;
+    }
+    int lf=2*par+1,rt=lf+1,mid=ns+(ne-ns)/2;
+    update(wh,toUpdt,lf,ns,mid);
+    update(wh,toUpdt,rt,mid+1,ne);
+    val=merge(tree[lf],tree[rt]);
+    return;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -479,6 +524,75 @@ vector<int> compress(vector<int>inp)
     }
     return ans;
 }
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+///////// euler tour on trees and LCA
+struct LCA {
+    vector<int> height, euler, first, segtree;
+    vector<bool> visited;
+    int n;
+
+    LCA(vector<vector<int>> &adj, int root = 0) {
+        n = adj.size();
+        height.resize(n);
+        first.resize(n);
+        euler.reserve(n * 2);
+        visited.assign(n, false);
+        dfs(adj, root);
+        int m = euler.size();
+        segtree.resize(m * 4);
+        build(1, 0, m - 1);
+    }
+
+    void dfs(vector<vector<int>> &adj, int node, int h = 0) {
+        visited[node] = true;
+        height[node] = h;
+        first[node] = euler.size();
+        euler.push_back(node);
+        for (auto to : adj[node]) {
+            if (!visited[to]) {
+                dfs(adj, to, h + 1);
+                euler.push_back(node);
+            }
+        }
+    }
+
+    void build(int node, int b, int e) {
+        if (b == e) {
+            segtree[node] = euler[b];
+        } else {
+            int mid = (b + e) / 2;
+            build(node << 1, b, mid);
+            build(node << 1 | 1, mid + 1, e);
+            int l = segtree[node << 1], r = segtree[node << 1 | 1];
+            segtree[node] = (height[l] < height[r]) ? l : r;
+        }
+    }
+
+    int query(int node, int b, int e, int L, int R) {
+        if (b > R || e < L)
+            return -1;
+        if (b >= L && e <= R)
+            return segtree[node];
+        int mid = (b + e) >> 1;
+
+        int left = query(node << 1, b, mid, L, R);
+        int right = query(node << 1 | 1, mid + 1, e, L, R);
+        if (left == -1) return right;
+        if (right == -1) return left;
+        return height[left] < height[right] ? left : right;
+    }
+
+    int lca(int u, int v) {
+        int left = first[u], right = first[v];
+        if (left > right)
+            swap(left, right);
+        return query(1, 0, euler.size() - 1, left, right);
+    }
+};
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////
 ///////// ford fulkerson' Max Flow
 int path[N],int costs[N][N],pathLen;
