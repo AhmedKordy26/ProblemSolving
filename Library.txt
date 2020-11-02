@@ -278,6 +278,12 @@ int CompareDouble(double a,double b)
 {
 return fabs(a-b)<=EPS ? 0: a<b ? -1 : 1 ;
 }
+pair<double,double> pointDivideLineSegment(pair<double,double>a,pair<double,double>b,double frSeg,double secSeg)//first point ,, second point ,, length of first segment ,, length of the second
+{
+    //first point ,, second point ,, length of first segment ,, length of the second
+    return {(frSeg*b.F+secSeg*a.F)/(frSeg+secSeg),(frSeg*b.S+secSeg*a.S)/(frSeg+secSeg)};
+}
+pair<int,int
 ///////////////////////////////////////////////////////////////////////////////////
 // DSU UninFind
 
