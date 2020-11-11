@@ -339,6 +339,37 @@ struct DSU
 };
 
 
+///////////////////////////
+int color[N];// color == 0 white ,, color==1 grey  ,,  color ==2 black
+vector<int>vec[N];
+int par[N];
+void DirectedGraphCycleDetection(int v){
+    color[v] = 1; // GREY
+    for(auto w:vec[v]){
+        if(color[w] == 1){
+            //found cycle
+        }
+        if(color[w] == 0) par[w]=v,DirectedGraphCycleDetection(w);
+    }
+    color[v] = 2; // BLACK
+}// in main try all white nodes
+
+////
+bool vis[N];
+void UndirectedGraphCycleDetection(int v,int p){
+    vis[v]=1;
+    for(auto u:vec[v]){
+        if(vis[u])
+        {
+            if(u!=p)cycle=1;
+        }
+        else UndirectedGraphCycleDetection(u,v);
+    }
+}// in main try all unvisited nodes
+
+
+
+//////////////////////////////////////////////////////
 /////////////////////////// MST_Kruskal
 
 struct edge {
