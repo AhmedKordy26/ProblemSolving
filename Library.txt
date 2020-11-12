@@ -82,16 +82,30 @@ int GetLowestBitPos(int value)
    return ++pos;
 }
 
+////////////////////////////////////////////////
 
+
+ __builtin_popcount(n)//This function is used to count the number of one’s(set bits) in an integer.
+
+
+
+__builtin_parity(n) //This function is used to check the parity of a number. 
+///This function returns true(1) if the number has odd parity else it returns false(0) for even parity.
+//7 has odd number of (1) then it's pariety is 1
+
+
+
+printf("Count of leading zeros before 1 in %d is %d", n, __builtin_clz(n)); 
+
+
+printf("Count of zeros from last to first occurrence of one is %d", __builtin_ctz(n)); 
+
+
+
+////////////////////////////////////////////////
 ld dis(int x1,int y1,int x2,int y2)
 {
     return sqrt(pow(x2-x1,2)+pow(y2-y1,2));
-}
-int logg2(ll n)
-{
-    int ans=0;
-    while(n)ans++,n/=2;
-    return --ans;
 }
 vector<ll> numdiv(ll n)
 {
