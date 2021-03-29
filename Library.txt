@@ -18,6 +18,7 @@
 #define F first
 #define S second
 #define PI ( 2 * acos(0.0))
+#define my_sizeof(type) ((char *)(&type+1)-(char*)(&type))
 #define EPS 1e-8
 #define INF 1.0/0.0
 #define Yala_Besor3a ios_base::sync_with_stdio(0),ios::sync_with_stdio(0),cin.tie(0),cout.tie(0)
@@ -45,10 +46,34 @@ this code is by Ahmed ....
 //sum from first to last = total_numbers * ( first / 2 + last / 2 )
 //A=65 // a=97  // num=48
 //decimal to binary :: while(n!=0) {r=(n%2==0 ?"0":"1")+r; n/=2;}
-//int value = atoi(myString.c_str());
+//int value of string = atoi(myString.c_str());
 //Hot Mod (a%n+n)%n
 
 const int OO = 0x3f3f3f3f,NegOO= -1*OO,N =35,mod = 1e9+7 ;
+///////////////////////////////////////////////
+/////////// fast choosing ncr
+
+long long fac[N]={1} ,inv[N]={1} ;
+long long fast_power(long long b,long long p){
+    long long res=1;
+    while(p){
+        if(p%2) res=(res*b)%mod;
+        b=(b*b)%mod;
+        p/=2;
+    }
+    return res;
+}
+void prep(){
+    for(int i=1;i<N;++i){
+        fac[i]=(fac[i-1]*i)%mod;
+        inv[i]=fast_power(fac[i],mod-2);
+    }
+}
+long long choose(int n,int r){
+    return ((fac[n]*inv[r])%mod*inv[n-r])%mod;
+}
+
+///////////////////////////////////////////////
 ll Pow(ll base,ll exponent)
 {
     ll result = 1;
@@ -71,17 +96,24 @@ ll PowOf2(int k)
     }
     return ans;
 }
-int GetLowestBitPos(int value)
-{
-   int pos = 0;
-   while (!(value & 1))
-   {
-      value >>= 1;
-      ++pos;
-   }
-   return ++pos;
-}
 
+public int[] addFractions(int[] a, int[] b)
+{
+int denom=LCM(a[1],b[1]);
+int[] c={denom/a[1]*a[0] + denom/b[1]*b[0], denom};
+return c;
+}
+public void reduceFraction(int[] a)
+{
+int b=GCD(a[0],a[1]);
+a[0]/=b;
+a[1]/=b;
+}
+public int[] multiplyFractions(int[] a, int[] b)
+{
+int[] c={a[0]*b[0], a[1]*b[1]};
+return c;
+}
 ////////////////////////////////////////////////
 
 
