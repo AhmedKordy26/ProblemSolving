@@ -385,6 +385,7 @@ struct DSU
 };
 
 
+
 ///////////////////////////
 int color[N];// color == 0 white ,, color==1 grey  ,,  color ==2 black
 vector<int>vec[N];
@@ -445,7 +446,55 @@ pair<int,vector<edge> > MST_Kruskal(vector<edge> edgeList,int n) // o (E log V)
 
 
 
-
+///////////////////////////////////////////////////////////////////////////////////
+////////////// Trie datastructure
+class Trie{
+    bool isLeaf;
+    int count;
+    Trie* children[MAX_CHAR];
+public:
+    
+    Trie(){
+        isLeaf=false;
+        count=0;
+        for(int i=0;i<MAX_CHAR;++i)children[i]=NULL;
+    }
+    void insert(string word)
+    {
+        int size=word.length();
+        Trie *pntr=this;
+        for(int i=0;i<size;++i)
+        {
+            if(pntr->children[word[i]-'a']==NULL)pntr->children[word[i]-'a']=new Trie();
+            pntr->count++;
+            pntr=pntr->children[word[i]-'a'];
+        }
+        pntr->isLeaf=true;
+    }
+    bool search(string word)
+    {
+        int size=word.length();
+        Trie *pntr=this;
+        for(int i=0;i<size;++i)
+        {
+            if(pntr->children[word[i]-'a']==NULL)return false;
+            pntr=pntr->children[word[i]-'a'];
+        }
+        return pntr->isLeaf;
+    }
+    bool isPrefix(string word)
+    {
+        int size=word.length();
+        Trie *pntr=this;
+        for(int i=0;i<size;++i)
+        {
+            if(pntr->children[word[i]-'a']==NULL)return false;
+            pntr=pntr->children[word[i]-'a'];
+        }
+        return true;
+    }
+};
+///////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// Tree Isomorphism check
